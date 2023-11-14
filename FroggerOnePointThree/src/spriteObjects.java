@@ -26,14 +26,14 @@ public class spriteObjects {
 	}
 	public void setX(int x) {
 		this.x = x;
-		this.hBox.x = this.x; //moves rectangle with object on screen
+		this.hBox.x = this.x;
 	}
 	public int getY() {
 		return y;
 	}
 	public void setY(int y) {
 		this.y = y;
-		this.hBox.y = this.y; //moves rectangle with object on screen
+		this.hBox.y = this.y;
 	}
 	public int getHeight() {
 		return height;

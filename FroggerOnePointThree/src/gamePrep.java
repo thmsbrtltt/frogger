@@ -1,9 +1,11 @@
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -30,6 +32,7 @@ public class gamePrep extends JFrame implements KeyListener, ActionListener{
 	
 	//boolean for game state 
 	private boolean gameStarted = false;
+	private volatile boolean collisionOccurred = false;
 
 	
 	//2d array initialization
@@ -38,14 +41,14 @@ public class gamePrep extends JFrame implements KeyListener, ActionListener{
     	for(int i=0; i<cars.length; i++) {
     		for(int j=0; j<cars[i].length; j++) {
     			//last parameter changes direction of odd numbered car rows using ternary operator 
-    			cars[i][j] = new car(40 + j * 150, 255 + i * 60, 150, 150, "carLeft.png", (i % 2 == 0) ? 0 : 1, 1.5); 
+    			cars[i][j] = new car(40 + j * 150, 295 + i * 60, 60, 60, "carLeft.png", (i % 2 == 0) ? 0 : 1, 0.5, frogger); 
     			add(cars[i][j].getCarLabel());
     		}
     	}
     	
     	for (int i = 0; i < logs.length; i++) {
             for (int j = 0; j < logs[i].length; j++) {
-                logs[i][j] = new log(40 + j * 150, 60 + i * 60, 150, 150, "log.png", (i % 2 == 0) ? 0 : 1, 0.5);
+                logs[i][j] = new log(40 + j * 150, 90 + i * 60, 80, 80, "log.png", (i % 2 == 0) ? 0 : 1, 0.5, frogger);
                 add(logs[i][j].getLogLabel());
             }
         }
@@ -62,7 +65,7 @@ public class gamePrep extends JFrame implements KeyListener, ActionListener{
     private void resetObjects() {
         
     	//set frogger to start position
-    	updateFroggerPosition(275, 400);
+    	updateFroggerPosition(275, 475);
     	
     	//stop cars and logs
         stopCarsAndLogs();
@@ -110,19 +113,22 @@ public class gamePrep extends JFrame implements KeyListener, ActionListener{
     //start thread for cars and logs
     private void startCarsAndLogs() {
         
-        for (car[] carRow : cars) {
-            for (car car : carRow) {
-                car.setMoving(true);
-                car.startThread();
-            }
-        }
+    	for (car[] carRow : cars) {
+    	    for (car car : carRow) {
+    	        car.setMoving(true);
+    	        Thread carThread = new Thread(car);
+    	        carThread.start();
+    	    }
+    	}
 
         for (log[] logRow : logs) {
             for (log log : logRow) {
                 log.setMoving(true);
                 log.startThread();
+                
             }
         }
+       
     }
     
     //update frogger position
@@ -132,12 +138,28 @@ public class gamePrep extends JFrame implements KeyListener, ActionListener{
 	    froggerLabel.setLocation(frogger.getX(), frogger.getY());
 	}
   
+    private void printCarsHBoxBounds() {
+        for (car[] carRow : cars) {
+            for (car car : carRow) {
+                car.printHBoxBounds();
+            }
+        }
+    }
+
+//    private void printLogsHBoxBounds() {
+//        for (log[] logRow : logs) {
+//            for (log log : logRow) {
+//                log.printHBoxBounds();
+//            }
+//        }
+//    }
 	public gamePrep() {
-		
+		 
 		//gui code setup
-		frogger = new frogger(100, 200, 96, 96, "frogger.png");
+		frogger = new frogger(100, 200, 56, 56, "frogger.png");
 		cars = new car[3][4]; 
 		logs= new log[3][4];
+		
 		
 		 //load background image
         backgroundImage = new ImageIcon(getClass().getResource("sprites/background.png"));
@@ -150,14 +172,14 @@ public class gamePrep extends JFrame implements KeyListener, ActionListener{
         content = getContentPane();
         
         instructLabel = new JLabel("FROGGER - Click 'Start' To Play!");
-        instructLabel.setBounds(200, 0, 200, 50); 
+        instructLabel.setBounds(200, 0, 300, 50); 
         content.add(instructLabel);
         
 		//frogger setup
 		frogger.setX(275);
-		frogger.setY(400);
-		frogger.setWidth(161);
-		frogger.setHeight(200);
+		frogger.setY(475);
+		frogger.setWidth(50);
+		frogger.setHeight(50);
 		frogger.setImage("frogger.png");
 		
 		froggerLabel = new JLabel();
@@ -171,7 +193,10 @@ public class gamePrep extends JFrame implements KeyListener, ActionListener{
 		
 		//add car and log arrays
 		carLogInit();
-				
+		
+		frogger.printHBoxBounds();
+		printCarsHBoxBounds();
+		
 		//start button
 		startButton = new JButton("Start");
 		startButton .setSize(80, 50);
@@ -208,66 +233,69 @@ public class gamePrep extends JFrame implements KeyListener, ActionListener{
 	public void keyPressed(KeyEvent e) {
 		System.out.println("key pressed");
 		
-		 if (!gameStarted) {
-			 
-		        System.out.println("Press the Start button to begin the game.");
-		        return;
-		    }
-				//get current position
-				int x = frogger.getX();
-				int y = frogger.getY();
-				
-				//detect direct and modify coordinates
-				if(e.getKeyCode() == KeyEvent.VK_UP) { //detecting up arrow press
-					y -= gameProperties.FROGGER_STEP;
-					
-					//creates scrolling effect when leaving bottom screen boundary
-					if( y + frogger.getHeight() <= 0) {
-						y = gameProperties.SCREEN_HEIGHT;
-					}
-					
-				} else if(e.getKeyCode() == KeyEvent.VK_DOWN) { //detecting down arrow press
-					y += gameProperties.FROGGER_STEP;
-					
-					//creates scrolling effect when leaving top screen boundary
-					if( y >= gameProperties.SCREEN_HEIGHT) {
-						y = -1 * frogger.getHeight();
-					}
-					
-				} else if(e.getKeyCode() == KeyEvent.VK_LEFT) { //detecting left arrow press
-					x -= gameProperties.FROGGER_STEP;
-					
-					if( x + frogger.getWidth() < 0) {
-						x = gameProperties.SCREEN_WIDTH;
-					}
-			
-				} else if(e.getKeyCode() == KeyEvent.VK_RIGHT) { //detecting right arrow press
-					x += gameProperties.FROGGER_STEP;
-					
-					if( x >= gameProperties.SCREEN_WIDTH) {
-						x = -1 * frogger.getWidth();
-					}
-				} else {
-					System.out.println("invalid Operation");
-					return;
-				}
-				
-				//creates boundary on right edge of screen
-				//if( x > gameProperties.SCREEN_WIDTH - frogger.getWidth()) {
-					//x = gameProperties.SCREEN_WIDTH - frogger.getWidth();
-				//}
+		if (!gameStarted) {
+	        System.out.println("Press the Start button to begin the game.");
+	        return;
+	    }
 
-				updateFroggerPosition(x, y);
-				
-				froggerLabel.setLocation(frogger.getX(), frogger.getY());
-				
-				//win condition 
-		        if (y <= 0) {
-		            
-		            winCondition();
-		            
-		            stopCarsAndLogs();
-		        }
+	    // get current position
+	    int x = frogger.getX();
+	    int y = frogger.getY();
+
+	    // detect direction and modify coordinates
+	    if (e.getKeyCode() == KeyEvent.VK_UP) { // detecting up arrow press
+	        y -= gameProperties.FROGGER_STEP;
+	        // creates scrolling effect when leaving bottom screen boundary
+	        if (y + frogger.getHeight() <= 0) {
+	            y = gameProperties.SCREEN_HEIGHT;
+	        }
+
+	    } else if (e.getKeyCode() == KeyEvent.VK_DOWN) { // detecting down arrow press
+	        y += gameProperties.FROGGER_STEP;
+	        // creates scrolling effect when leaving top screen boundary
+	        if (y >= gameProperties.SCREEN_HEIGHT) {
+	            y = -1 * frogger.getHeight();
+	        }
+
+	    } else if (e.getKeyCode() == KeyEvent.VK_LEFT) { // detecting left arrow press
+	        x -= gameProperties.FROGGER_STEP;
+
+	        if (x + frogger.getWidth() < 0) {
+	            x = gameProperties.SCREEN_WIDTH;
+	        }
+
+	    } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) { // detecting right arrow press
+	        x += gameProperties.FROGGER_STEP;
+
+	        if (x >= gameProperties.SCREEN_WIDTH) {
+	            x = -1 * frogger.getWidth();
+	        }
+
+	    } else {
+	        System.out.println("Invalid Operation");
+	        return;
+	    }
+
+	    // creates boundary on the right edge of the screen
+	    // if( x > gameProperties.SCREEN_WIDTH - frogger.getWidth()) {
+	    // x = gameProperties.SCREEN_WIDTH - frogger.getWidth();
+	    //}
+
+	    updateFroggerPosition(x, y);
+	    froggerLabel.setLocation(frogger.getX(), frogger.getY());
+	    
+	    System.out.println("Frogger position - X: " + frogger.getX() + ", Y: " + frogger.getY());
+
+	    // check for collision only when the frogger moves
+	    if (checkCollision()) {
+	        handleCollision();
+	    }
+
+	    // win condition
+	    if (y <= 0) {
+	        winCondition();
+	        stopCarsAndLogs();
+	    }
 	}
 	
 	@Override
@@ -291,7 +319,7 @@ public class gamePrep extends JFrame implements KeyListener, ActionListener{
 			instructLabel.setVisible(false);
         	gameStarted = true;
         	startCarsAndLogs();
-        	startButton.setEnabled(false); // <- should maybe change to stop unwanted speed incrementing
+        	startButton.setEnabled(false); 
         }	
 		
 		//restart button
@@ -302,4 +330,43 @@ public class gamePrep extends JFrame implements KeyListener, ActionListener{
 			gameStarted = true;
 		}
 	}
+	
+	// Check for collision
+    private boolean checkCollision() {
+        for (car[] carRow : cars) {
+            for (car car : carRow) {
+                if (car.hBox.intersects(frogger.getRectangle())) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    // Handle collision
+    private void handleCollision() {
+        System.out.println("Collision!");
+        froggerLabel.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
+        for (int i = 0; i < cars.length; i++) {
+            for (int j = 0; j < cars[i].length; j++) {
+                if (cars[i][j].hBox.intersects(frogger.getRectangle())) {
+                 
+                    System.out.println("Frogger collided with car at Row: " + i + ", Column: " + j);
+                    cars[i][j].getCarLabel().setOpaque(true);
+                    cars[i][j].getCarLabel().setBackground(Color.RED);
+                    break;
+                }
+            }
+        }
+        
+        for (car[] carRow : cars) {
+            for (car car : carRow) {
+                car.getCarLabel().setBorder(BorderFactory.createLineBorder(Color.RED, 2));
+            }
+        }
+        collisionOccurred = true;
+        gameStarted = false;
+        stopCarsAndLogs();
+    }
 }
