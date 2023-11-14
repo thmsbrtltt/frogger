@@ -64,7 +64,7 @@ public class car extends movingObjects implements Runnable {
 
     private void moveLeft() {
         
-        x -= (int) (gameProperties.CAR_STEP * speedAdjust); //speed adjust demo !!!!
+        x -= (int) (gameProperties.CAR_STEP * speedAdjust);
 
         if (x + width < 0) {
             x = gameProperties.SCREEN_WIDTH;

@@ -3,7 +3,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 
 public class movingObjects extends spriteObjects implements Runnable{
-	private Boolean visible, moving;
+	private Boolean moving;
 	private Thread t;
 	private JLabel carLabel;
 	private JLabel logLabel;
@@ -19,29 +19,19 @@ public class movingObjects extends spriteObjects implements Runnable{
 	public void setMoving(Boolean moving) {
 		this.moving = moving;
 	}
-	
-	public Boolean getVisible() {
-		return visible;
-	}
-
-	public void setVisible(Boolean visible) {
-		this.visible = visible;
-	}
 
 	public movingObjects() {
 		super();
 	}
 	
-	public movingObjects(Boolean visible, Boolean moving) {
+	public movingObjects(Boolean moving) {
 		super();
 		this.moving = moving;
-		this.visible = visible;
 	}
 	
-	public movingObjects(Boolean visible, Boolean moving, int x, int y, int height, int width, String image) {
+	public movingObjects(Boolean moving, int x, int y, int height, int width, String image) {
 		super(x, y, height, width, image);
 		this.moving = moving;
-		this.visible = visible;
 	}
 
 	@Override
@@ -65,10 +55,6 @@ public class movingObjects extends spriteObjects implements Runnable{
 			carLabel.setLocation(this.x, this.y);
 			
 			// detect collision
-			if (this.visible) {
-				this.detectCollision();
-			}
-				
 			
 			try {
 				Thread.sleep(200);
@@ -82,11 +68,8 @@ public class movingObjects extends spriteObjects implements Runnable{
 	//start thread 
 	public void startThread() {
 		if( !this.moving) {
-			this.moving = true;
-			t = new Thread(this, "Moving Objects Thread");
-			t.start();	
+			this.moving = true;	
 		}
-		
 	}
 	
 	//stop thread

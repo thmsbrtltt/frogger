@@ -6,13 +6,15 @@ public class log extends movingObjects implements Runnable {
     private boolean moving;
     private JLabel logLabel;
     private int direction;
+    private double speedAdjust;
 
-    public log(int x, int y, int width, int height, String image, int direction) {
+    public log(int x, int y, int width, int height, String image, int direction, double speedAdjust) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
         this.direction = direction;
+        this.speedAdjust = speedAdjust;
         moving = false;
 
         logLabel = new JLabel();
@@ -57,7 +59,7 @@ public class log extends movingObjects implements Runnable {
 
     private void moveLeft() {
         
-        x -= gameProperties.LOG_STEP;
+        x -= (gameProperties.LOG_STEP * speedAdjust);
 
         if (x + width < 0) {
             x = gameProperties.SCREEN_WIDTH;

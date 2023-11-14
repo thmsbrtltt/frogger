@@ -20,16 +20,15 @@ public class gamePrep extends JFrame implements KeyListener, ActionListener{
 	private Container content;
 	private JLabel froggerLabel;
 	private ImageIcon froggerImage;
-	
 	private JLabel backgroundLabel;
 	private ImageIcon backgroundImage;
-	
-	private JLabel instructLabel;
+	private JLabel instructLabel; //temp title and instructions label
 	
 	//buttons
 	private JButton startButton;
 	private JButton restartButton;
 	
+	//boolean for game state 
 	private boolean gameStarted = false;
 
 	
@@ -40,13 +39,13 @@ public class gamePrep extends JFrame implements KeyListener, ActionListener{
     		for(int j=0; j<cars[i].length; j++) {
     			//last parameter changes direction of odd numbered car rows using ternary operator 
     			cars[i][j] = new car(40 + j * 150, 255 + i * 60, 150, 150, "carLeft.png", (i % 2 == 0) ? 0 : 1, 1.5); 
-    					add(cars[i][j].getCarLabel());
+    			add(cars[i][j].getCarLabel());
     		}
     	}
     	
     	for (int i = 0; i < logs.length; i++) {
             for (int j = 0; j < logs[i].length; j++) {
-                logs[i][j] = new log(40 + j * 150, 60 + i * 60, 150, 150, "log.png", (i % 2 == 0) ? 0 : 1);
+                logs[i][j] = new log(40 + j * 150, 60 + i * 60, 150, 150, "log.png", (i % 2 == 0) ? 0 : 1, 0.5);
                 add(logs[i][j].getLogLabel());
             }
         }
@@ -77,7 +76,6 @@ public class gamePrep extends JFrame implements KeyListener, ActionListener{
         for (car[] carRow : cars) {
         	for (car car : carRow) {
         		car.setMoving(false);
-        		car.stopThread();
             }
         }
 
@@ -85,7 +83,6 @@ public class gamePrep extends JFrame implements KeyListener, ActionListener{
         for (log[] logRow : logs) {
             for (log log : logRow) {
                 log.setMoving(false);
-                log.stopThread();
             }
         }
     }
@@ -293,8 +290,8 @@ public class gamePrep extends JFrame implements KeyListener, ActionListener{
         	
 			instructLabel.setVisible(false);
         	gameStarted = true;
-        	
         	startCarsAndLogs();
+        	startButton.setEnabled(false); // <- should maybe change to stop unwanted speed incrementing
         }	
 		
 		//restart button
