@@ -1,3 +1,5 @@
+import java.awt.Rectangle;
+
 import javax.swing.JLabel;
 
 public class frogger extends spriteObjects {
@@ -14,4 +16,7 @@ public class frogger extends spriteObjects {
 		
 	}
 
+	public Rectangle getRectangle() {
+		return hBox;
+	}
 }

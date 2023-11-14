@@ -6,13 +6,15 @@ public class car extends movingObjects implements Runnable {
     private boolean moving;
     private JLabel carLabel;
     private int direction;
+    private double speedAdjust;
 
-    public car(int x, int y, int width, int height, String image, int direction) {
+    public car(int x, int y, int width, int height, String image, int direction, double speedAdjust) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
         this.direction = direction;
+        this.speedAdjust = speedAdjust;
         moving = false;
 
         carLabel = new JLabel();
@@ -37,7 +39,7 @@ public class car extends movingObjects implements Runnable {
     public int getDirection() {
         return direction;
     }
-    
+   
     public void startThread() {
         Thread t = new Thread(this);
         t.start();
@@ -53,7 +55,7 @@ public class car extends movingObjects implements Runnable {
                 moveRight();
             }
             try {
-                Thread.sleep(600);
+                Thread.sleep(800);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -62,7 +64,7 @@ public class car extends movingObjects implements Runnable {
 
     private void moveLeft() {
         
-        x -= gameProperties.CAR_STEP;
+        x -= (int) (gameProperties.CAR_STEP * speedAdjust); //speed adjust demo !!!!
 
         if (x + width < 0) {
             x = gameProperties.SCREEN_WIDTH;

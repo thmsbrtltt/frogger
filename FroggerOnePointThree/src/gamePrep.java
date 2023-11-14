@@ -39,7 +39,7 @@ public class gamePrep extends JFrame implements KeyListener, ActionListener{
     	for(int i=0; i<cars.length; i++) {
     		for(int j=0; j<cars[i].length; j++) {
     			//last parameter changes direction of odd numbered car rows using ternary operator 
-    			cars[i][j] = new car(40 + j * 150, 255 + i * 60, 150, 150, "carLeft.png", (i % 2 == 0) ? 0 : 1); 
+    			cars[i][j] = new car(40 + j * 150, 255 + i * 60, 150, 150, "carLeft.png", (i % 2 == 0) ? 0 : 1, 1.5); 
     					add(cars[i][j].getCarLabel());
     		}
     	}
@@ -134,7 +134,7 @@ public class gamePrep extends JFrame implements KeyListener, ActionListener{
 	    frogger.setY(y);
 	    froggerLabel.setLocation(frogger.getX(), frogger.getY());
 	}
-    
+  
 	public gamePrep() {
 		
 		//gui code setup
