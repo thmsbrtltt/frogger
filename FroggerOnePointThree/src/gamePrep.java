@@ -46,7 +46,7 @@ public class gamePrep extends JFrame implements KeyListener, ActionListener{
     	
     	for (int i = 0; i < logs.length; i++) {
             for (int j = 0; j < logs[i].length; j++) {
-                logs[i][j] = new log(40 + j * 150, 60 + i * 60, 150, 150, "log.png", (i % 2 == 0) ? 0 : 1);
+                logs[i][j] = new log(40 + j * 150, 60 + i * 60, 150, 150, "log.png", (i % 2 == 0) ? 0 : 1, 0.5);
                 add(logs[i][j].getLogLabel());
             }
         }
