@@ -1,5 +1,3 @@
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JLabel;
 
 public class movingObjects extends spriteObjects implements Runnable{
