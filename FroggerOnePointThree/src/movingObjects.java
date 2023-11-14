@@ -50,9 +50,9 @@ public class movingObjects extends spriteObjects implements Runnable{
 			this.x = x;
 			
 			this.setX(x); // this is required to update rectangle movement
-			carLabel.setLocation(this.x, this.y);
 			
-			// detect collision
+			carLabel.setLocation(this.x, this.y);
+			logLabel.setLocation(this.x, this.y);
 			
 			try {
 				Thread.sleep(200);
@@ -100,10 +100,6 @@ public class movingObjects extends spriteObjects implements Runnable{
 
 	public void setLog(log temp) {
 		log = temp;
-	}
-	
-	private void detectCollision() {
-		
 	}
 
 }
