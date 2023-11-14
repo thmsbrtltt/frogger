@@ -11,8 +11,6 @@ public class movingObjects extends spriteObjects implements Runnable{
 	private frogger frogger;
 	private log log;
 	private car car;
-	private JButton startButton;
-
 	
 	public Boolean getMoving() {
 		return moving;
@@ -102,6 +100,10 @@ public class movingObjects extends spriteObjects implements Runnable{
 	public void setcarLabel(JLabel temp) {
 		carLabel = temp;
 	}
+	
+	public void setCar(car temp) {
+		car = temp;
+	}
 
 	public void setFroggerLabel(JLabel temp) {
 		froggerLabel = temp;
@@ -111,10 +113,6 @@ public class movingObjects extends spriteObjects implements Runnable{
 		logLabel = temp;
 	}
 
-	public void setStartButton(JButton temp) {
-		startButton = temp;
-	}
-
 	public void setFrogger(frogger temp) {
 		frogger = temp;
 	}
@@ -122,14 +120,9 @@ public class movingObjects extends spriteObjects implements Runnable{
 	public void setLog(log temp) {
 		log = temp;
 	}
-
+	
 	private void detectCollision() {
-		if (hBox.intersects(frogger.getRectangle())) {
-			System.out.println("boom!");
-			this.moving = false;
-
-			this.froggerLabel.setIcon(new ImageIcon(getClass().getResource("sprites/frogger.png")));
-			this.carLabel.setIcon(new ImageIcon(getClass().getResource("sprites/carLeft.png")));
-		}
+		
 	}
+
 }
